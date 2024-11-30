@@ -1,10 +1,12 @@
+package template;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class LoginFrame {
+public class Login {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/dbdemo";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "";
@@ -18,7 +20,7 @@ public class LoginFrame {
 
         // Các thành phần giao diện
         JLabel lblRole = new JLabel("Role:");
-        JComboBox<String> cbRole = new JComboBox<>(new String[]{"Admin", "Customer"});
+        JComboBox<String> cbRole = new JComboBox<>(new String[]{"Admin", "Users"});
 
         JLabel lblUsername = new JLabel("Username:");
         JTextField txtUsername = new JTextField();
@@ -53,14 +55,13 @@ public class LoginFrame {
                     lblMessage.setForeground(Color.GREEN);
 
                     // Chuyển tiếp giao diện cho Customer
-                    if (role.equals("Customer")) {
-                        frame.dispose(); // Đóng giao diện đăng nhập
+                    if (role.equals("Users")) {
                         Customers.openCustomerInterface(username); // Mở giao diện Customer
                     } else {
-                        JOptionPane.showMessageDialog(null, "Welcome Admin!");
+                        Admin.openAdminInterface(username);
                     }
                 } else {
-                    lblMessage.setText("Invalid credentials!");
+                    lblMessage.setText("Nhập sai tài khoản hoặc mật khẩu!");
                     lblMessage.setForeground(Color.RED);
                 }
             }
@@ -75,7 +76,7 @@ public class LoginFrame {
         if (role.equals("Admin")) {
             query = "SELECT * FROM admins WHERE username = ? AND password = ?";
         } else {
-            query = "SELECT * FROM customers WHERE username = ? AND password = ?";
+            query = "SELECT * FROM users WHERE username = ? AND password = ?";
         }
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
@@ -94,7 +95,5 @@ public class LoginFrame {
         }
         return false;
     }
-
-    // Mở giao diện dành riêng cho Customer
 
 }
